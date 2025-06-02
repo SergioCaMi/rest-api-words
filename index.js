@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000; // Puerto del servidor
 
 // Cargar palabras desde archivo
 const words = require("./data/words.json");
+const languages = ["zh", "pt-br", "es", "de", "it", "fr"];
 
 // Middleware
 app.use(morgan("dev"));
@@ -19,24 +20,53 @@ app.use(express.json());
 
 // Iteración 1
 app.get("/api/v1/words", (req, res) => {
+  
   if (req.query.length) {
-    const lengthWords = req.query.length;
-    const wordResult = words.filter((w) => w.length == +lengthWords);
+    let lengthWords = +req.query.length;
+    if (isNaN(lengthWords) || lengthWords <= 0) {
+      return res.json({ word: _.sample(words) });
+    }
+    const wordResult = words.filter((w) => w.length == lengthWords);
     if (wordResult.length > 0) {
-      res.json({ word: _.sample(wordResult) });
+      return res.json({ word: _.sample(wordResult) });
     } else {
-      res.status(404).send("No existen palabras con esa condición.");
+      return res.status(404).send("No existen palabras con esa condición.");
     }
   } else {
-    res.json({ word: _.sample(words) });
+    return res.json({ word: _.sample(words) });
   }
 });
 
-// Iteración 2
-
 // Iteración 3
 
+// app.get("/api/v2/languages", (req, res) => {
+//   if (languages) {
+//     res.json({ languages });
+//   } else {
+//     res.status(404).send("No existen lenguajes disponibles.");
+//   }
+// });
+
 // Iteración 4
+// app.get("/api/v2/words", async (req, res) => {
+//   let getLang = "";
+//   let getLenght = "";
+//   let ampersand = "";
+//   if (req.query.length) {
+//     getLenght = `length=${req.query.length}`;
+//   }
+//   if (req.query.lang) {
+//     getLang = `lang=${req.query.lang}`;
+//   }
+//   if (getLang && getLenght) {
+//     ampersand = `&`;
+//   }
+//   const queryString = `https://random-word-api.herokuapp.com/word?${getLenght}${ampersand}${getLang}`;
+//   const res = await fetch(queryString);
+//   const data = await response.json();
+
+//   res.json({ data });
+// });
 
 // 404 para rutas no existentes
 app.use((req, res) => {
