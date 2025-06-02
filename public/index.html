@@ -24,7 +24,31 @@
     <h3>Ejemplo de respuesta v1</h3>
     <pre>{
   "word": "mar"
-}</pre>    
+}</pre>
+
+    <h2>Endpoints v2</h2>
+    <ul>
+      <li>
+        <strong><a href="/api/v2/words" target="_blank">GET /api/v2/words</a></strong><br>
+        Devuelve una palabra aleatoria de la API externa.
+      </li>
+      <li>
+        <strong><a href="/api/v2/words?length=5&lang=es" target="_blank">GET /api/v2/words?length=5&lang=es</a></strong><br>
+        Devuelve una palabra aleatoria de <code>5</code> letras en español.
+      </li>
+      <li>
+        <strong><a href="/api/v2/languages" target="_blank">GET /api/v2/languages</a></strong><br>
+        Devuelve los idiomas soportados.
+      </li>
+    </ul>
+    <h3>Ejemplo de respuesta v2</h3>
+    <pre>{
+  "word": "palabra"
+}</pre>
+    <h3>Ejemplo de respuesta de idiomas</h3>
+    <pre>{
+  "languages": ["zh", "pt-br", "es", "de", "it", "fr"]
+}</pre>
   </main>
 </body>
 </html>
