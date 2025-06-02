@@ -70,7 +70,7 @@ app.get("/api/v2/words", async (req, res) => {
   const response = await fetch(queryString);
   const data = await response.json();
 
-  res.json({ data });
+  res.json({ "word": data[0] || "No se encontró palabra" });
 });
 
 // 404 para rutas no existentes
