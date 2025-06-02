@@ -3,6 +3,7 @@ const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
 const _ = require("lodash");
+const cors = require('cors');
 
 const app = express(); //  Crear instancia de Express
 const PORT = process.env.PORT || 3000; // Puerto del servidor
@@ -15,6 +16,10 @@ const languages = ["zh", "pt-br", "es", "de", "it", "fr"];
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+
+
+// deshabilitamos la seguridad CORS
+app.use(cors());
 
 // Endpoints
 
@@ -39,34 +44,34 @@ app.get("/api/v1/words", (req, res) => {
 
 // Iteración 3
 
-// app.get("/api/v2/languages", (req, res) => {
-//   if (languages) {
-//     res.json({ languages });
-//   } else {
-//     res.status(404).send("No existen lenguajes disponibles.");
-//   }
-// });
+app.get("/api/v2/languages", (req, res) => {
+  if (languages) {
+    res.json({ languages });
+  } else {
+    res.status(404).send("No existen lenguajes disponibles.");
+  }
+});
 
 // Iteración 4
-// app.get("/api/v2/words", async (req, res) => {
-//   let getLang = "";
-//   let getLenght = "";
-//   let ampersand = "";
-//   if (req.query.length) {
-//     getLenght = `length=${req.query.length}`;
-//   }
-//   if (req.query.lang) {
-//     getLang = `lang=${req.query.lang}`;
-//   }
-//   if (getLang && getLenght) {
-//     ampersand = `&`;
-//   }
-//   const queryString = `https://random-word-api.herokuapp.com/word?${getLenght}${ampersand}${getLang}`;
-//   const res = await fetch(queryString);
-//   const data = await response.json();
+app.get("/api/v2/words", async (req, res) => {
+  let getLang = "";
+  let getLenght = "";
+  let ampersand = "";
+  if (req.query.length) {
+    getLenght = `length=${req.query.length}`;
+  }
+  if (req.query.lang) {
+    getLang = `lang=${req.query.lang}`;
+  }
+  if (getLang && getLenght) {
+    ampersand = `&`;
+  }
+  const queryString = `https://random-word-api.herokuapp.com/word?${getLenght}${ampersand}${getLang}`;
+  const response = await fetch(queryString);
+  const data = await response.json();
 
-//   res.json({ data });
-// });
+  res.json({ data });
+});
 
 // 404 para rutas no existentes
 app.use((req, res) => {
