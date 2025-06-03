@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const path = require("path");
 const _ = require("lodash");
 const cors = require('cors');
+const fs = require("fs");
 
 const app = express(); //  Crear instancia de Express
 const PORT = process.env.PORT || 3000; // Puerto del servidor
@@ -56,22 +57,46 @@ app.get("/api/v2/languages", (req, res) => {
 app.get("/api/v2/words", async (req, res) => {
   let getLang = "";
   let getLenght = "";
-  let ampersand = "";
   if (req.query.length) {
     getLenght = `length=${req.query.length}`;
   }
   if (req.query.lang) {
+    if (req.query.length){
+    getLang = `&lang=${req.query.lang}`;
+    }else{
     getLang = `lang=${req.query.lang}`;
+    }
   }
-  if (getLang && getLenght) {
-    ampersand = `&`;
-  }
-  const queryString = `https://random-word-api.herokuapp.com/word?${getLenght}${ampersand}${getLang}`;
+  const queryString = `https://random-word-api.herokuapp.com/word?${getLenght}${getLang}`;
   const response = await fetch(queryString);
   const data = await response.json();
+  console.log(!words.includes(data[0]));
+  if (!words.includes(data[0])){
+    console.log(words + " original");
 
+    words.push(data[0]);
+    console.log(words);
+    fs.writeFileSync("./data/words.json", JSON.stringify(words, null, 2));
+  }
   res.json({ "word": data[0] || "No se encontró palabra" });
 });
+
+
+// BONUS 2
+app.get("/api/v1/words/all", (req, res) => {
+  
+  res.json({words: words || "No existen palabras disponibles."});
+});
+ 
+
+app.get("/api/v1/words/:index", (req, res) => {
+  const index = +req.params.index;
+  if (isNaN(index) || index < 0 || index >= words.length) {
+    return res.status(404).json({ error: "Índice no válido" });
+  }
+  res.json({ word: words[index] });
+});
+
 
 // 404 para rutas no existentes
 app.use((req, res) => {
